@@ -2,9 +2,12 @@ import _debounce from 'debounce';
 import validator from 'validator';
 import refs from './refs.js';
 import serviceApi from './api-service.js';
+import Trending from './components/trending.js';
 import { drawCards } from './components/gallery-adapter';
 
 const { list, input, notifyEr, searchHeadIcon } = refs;
+
+const showTrendinMovie = new Trending();
 
 let searchQuery = '';
 
@@ -19,6 +22,8 @@ input.addEventListener(
     if (!validateQueryValue) {
       searchQuery = queryValue;
       render(queryValue);
+    } else {
+      showTrendinMovie.onHomePageLoaded()
     }
   }, 300),
 );
