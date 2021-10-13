@@ -2,8 +2,12 @@ import _debounce from 'debounce';
 import validator from 'validator';
 import refs from './refs.js';
 import serviceApi from './api-service.js';
+
 import Trending from './components/trending.js';
 import { drawCards } from './components/gallery-adapter';
+
+import { drawCards, scrollToTop } from './components/gallery-adapter';
+
 
 const { list, input, notifyEr, searchHeadIcon } = refs;
 
@@ -17,7 +21,7 @@ input.addEventListener(
     const queryValue = e.target.value.trim(' ');
     const validateQueryValue = validator.isEmpty(queryValue);
     notifyEr.classList.add('hide');
-    searchHeadIcon.classList.remove('hideInMobile'); 
+    searchHeadIcon.classList.remove('hideInMobile');
     list.innerHTML = ' ';
     if (!validateQueryValue) {
       searchQuery = queryValue;
@@ -45,6 +49,7 @@ const fetchNewPagefromSearch = event => {
     .then(elem => {
       const { showArrayElement, totalResults } = elem;
       drawCards(showArrayElement);
+      scrollToTop();
 
       console.log('New elements fetched', showArrayElement);
 
@@ -64,7 +69,7 @@ function render(query) {
       const showArrayElement = param.results;
       if (showArrayElement.length == 0) {
         notifyEr.classList.remove('hide');
-       searchHeadIcon.classList.add('hideInMobile'); 
+        searchHeadIcon.classList.add('hideInMobile');
         list.innerHTML = '';
       }
       return { showArrayElement, totalResults };
