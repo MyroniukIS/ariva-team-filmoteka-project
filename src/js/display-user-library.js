@@ -20,6 +20,7 @@ const getCurrentTab = () => {
 
 const onButtonClick = event => {
   {
+    event.preventDefault();
     if (event.target.classList.contains('btn-active')) {
       return;
     }
@@ -61,6 +62,7 @@ function getFilmsFromLocalStorage(typeFilms, pageNumber) {
 }
 
 function onLibraryLinkClick(event) {
+  event.preventDefault();
   if (event.target.classList.contains('link__current')) {
     return;
   }
