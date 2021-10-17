@@ -65,6 +65,11 @@
   @media screen and (min-width: 1024px) {
     flex-basis: calc((100% - 3 * 30px) / 3);
     width: 274px;
+
+    transition: transform 0.3s;
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 }
 
