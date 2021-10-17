@@ -15,5 +15,7 @@ export default {
   btnCloseModal: document.querySelector('.developers__button'),
   body: document.querySelector('body'),
   switch: document.querySelector('.theme-switch__toggle'),
+  watchedButton : document.getElementById('watched'),
+  queueButton : document.getElementById('queue'),
   spinerContainer: document.querySelector('.spiner-js'),
 };
