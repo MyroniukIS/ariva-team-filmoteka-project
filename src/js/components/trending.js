@@ -1,4 +1,5 @@
 import TrendingAPI from '../utils/trending-api';
+import { spiner } from '../utils/rainbow-spiner';
 import { drawCards, scrollToTop } from './gallery-adapter';
 
 export default class Trending {
@@ -16,12 +17,18 @@ export default class Trending {
   }
 
   async onHomePageLoaded() {
+    if (spiner.isHidden) {
+      spiner.show();
+    }
+
     try {
       const { total_results, results } = await this.trendingAPI.getMovies();
       drawCards(results);
       this.bindPaginatorToTrending(total_results);
     } catch (error) {
       console.error(error);
+    } finally {
+      setTimeout(spiner.hide, 500);
     }
   }
 
