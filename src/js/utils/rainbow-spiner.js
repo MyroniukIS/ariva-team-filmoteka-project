@@ -10,3 +10,4 @@ export const spiner = {
     spinerContainer.classList.add('hidden');
   },
 };
+
