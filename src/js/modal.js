@@ -2,6 +2,7 @@ import renderModalClass from './render-modal-class.js';
 import apiService from './utils/api-service-modal.js';
 import movieModalTemplate from '../templates/one-movie-modal.hbs';
 import refs from './refs.js';
+import { getCurrentTab, renderList } from './display-user-library.js';
 
 const { list, body } = refs;
 
@@ -110,6 +111,10 @@ const addFilmsToLSbyButtonClick = {
           let index = getItemWatched.indexOf(this.id);
           getItemWatched.splice(index, 1);
           localStorage.setItem('watched', JSON.stringify(getItemWatched));
+          //auto-update-gallery-after-REMOVE
+          const currentType = getCurrentTab();
+          renderList(currentType);
+          // ----
         }
       }
       // IF CHECKED ADD TO QUEUE
@@ -132,6 +137,10 @@ const addFilmsToLSbyButtonClick = {
           let index = getItemQueue.indexOf(this.id);
           getItemQueue.splice(index, 1);
           localStorage.setItem('queue', JSON.stringify(getItemQueue));
+          //auto-update-gallery-after-REMOVE
+          const currentType = getCurrentTab();
+          renderList(currentType);
+          // ----
         }
       }
     }

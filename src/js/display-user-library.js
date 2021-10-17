@@ -13,7 +13,7 @@ const getTotalByType = typeFilms => {
   return JSON.parse(localStorage.getItem(typeFilms))?.length ?? 0;
 };
 
-const getCurrentTab = () => {
+export const getCurrentTab = () => {
   return dinamicButtons.querySelector('.btn-active').textContent.toLowerCase();
 };
 
@@ -78,7 +78,7 @@ function onLibraryLinkClick(event) {
   renderList(currentType);
 }
 
-function renderList(typeFilms, pageNumber) {
+export function renderList(typeFilms, pageNumber) {
   const array = getFilmsFromLocalStorage(typeFilms, pageNumber);
   if (array?.length === 0) {
     library.innerHTML = '';
