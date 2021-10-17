@@ -25,7 +25,6 @@ function openModal(e) {
       const modal = new renderModalClass(modalTemplate);
       modal.showModal();
       body.classList.add('modal-open');
-
       //----default btn-state REMOVE if id in LS
       const btnWatched = document.getElementById('toWatch');
       const btnQueue = document.getElementById('toQueue');
@@ -36,7 +35,6 @@ function openModal(e) {
         btnQueue.textContent = 'REMOVE FROM QUEUE';
       }
       // -----
-
       body.addEventListener('keydown', closeModalByKey);
       body.addEventListener('click', closeModalByClick);
 
@@ -65,7 +63,6 @@ function openModal(e) {
     });
   }
 }
-
 // LOCAL STORAGE
 // ADD TO LS
 const addFilmsToLSbyButtonClick = {

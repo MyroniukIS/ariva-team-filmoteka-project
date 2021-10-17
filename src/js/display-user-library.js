@@ -11,15 +11,11 @@ const arrayLsWatched = 'watched';
 const arrayLsQueue = 'queue';
 
 const displayUserLibrary = function () {
-  onClickButtonChangeCurrentButton();
-
+  //default display watched
   watchedButton.classList.add('btn-active');
   queueButton.classList.add('btn-disable');
-
-  // spiner.show();
-  //default display watched
   getFilmsFromLocalStorage('watched');
-  // spiner.hide();
+  onClickButtonChangeCurrentButton();
 };
 
 displayUserLibrary();
