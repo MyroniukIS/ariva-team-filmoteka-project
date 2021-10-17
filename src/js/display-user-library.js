@@ -1,9 +1,8 @@
 import refs from '../js/refs.js';
 import { spiner } from './utils/rainbow-spiner.js';
-
 import apiService from './utils/api-service.js';
-
 import galleryLib from '..//templates/one-movie-card-lib.hbs';
+import { enrichMovies, scrollToTop } from './components/library-adapter';
 
 const { queueButton, watchedButton, dinamicButtons, list: library, libraryLink, homeLink } = refs;
 
@@ -46,6 +45,7 @@ const onLibraryPageClick = event => {
   const currentType = getCurrentTab();
 
   renderList(currentType, page);
+  scrollToTop();
 };
 
 function getFilmsFromLocalStorage(typeFilms, pageNumber) {
@@ -88,9 +88,9 @@ function renderList(typeFilms, pageNumber) {
   if (spiner.isHidden) {
     spiner.show();
   }
-  apiService.fetchMoviesByIds(array).then(data => {
-    const card = galleryLib(data);
-    library.innerHTML = card;
+  apiService.fetchMoviesByIds(array).then(movies => {
+    const enrichedMovies = enrichMovies(movies);
+    library.innerHTML = galleryLib(enrichedMovies);
   });
   setTimeout(spiner.hide, 1000);
 }
