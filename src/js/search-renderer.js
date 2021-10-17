@@ -3,6 +3,7 @@ import validator from 'validator';
 import refs from './refs.js';
 import serviceApi from './utils/api-service.js';
 import trending from './components/trending.js';
+import {spiner} from './utils/rainbow-spiner.js';
 import { drawCards, scrollToTop } from './components/gallery-adapter';
 
 const { list, input, notifyEr, searchHeadIcon } = refs;
@@ -21,7 +22,11 @@ input.addEventListener(
     list.innerHTML = ' ';
     if (!validateQueryValue) {
       searchQuery = queryValue;
+      if (spiner.isHidden) {
+            spiner.show();
+          }
       render(queryValue);
+      setTimeout(spiner.hide, 1000);
     } else {
       Trending.onHomePageLoaded();
     }
@@ -70,7 +75,6 @@ function render(query) {
       const { showArrayElement, totalResults } = elem;
 
       drawCards(showArrayElement);
-
       window.paginator.onPageClick = fetchNewPagefromSearch;
       window.paginator.totalResults = totalResults;
 
