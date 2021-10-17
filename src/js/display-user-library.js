@@ -10,78 +10,66 @@ const { queueButton, watchedButton, dinamicButtons, list: library, libraryLink, 
 const arrayLsWatched = 'watched';
 const arrayLsQueue = 'queue';
 
-const displayUserLibrary = function () {
-  //default display watched
-  watchedButton.classList.add('btn-active');
-  queueButton.classList.add('btn-disable');
-  getFilmsFromLocalStorage('watched');
-  onClickButtonChangeCurrentButton();
+const getTotalByType = typeFilms => {
+  return JSON.parse(localStorage.getItem(typeFilms))?.length ?? 0;
 };
 
-displayUserLibrary();
+const getCurrentTab = () => {
+  return dinamicButtons.querySelector('.btn-active').textContent.toLowerCase();
+};
 
-//function to display current button in myLibrary
-function onClickButtonChangeCurrentButton() {
-  dinamicButtons.addEventListener('click', e => {
-    if (e.target.textContent === 'WATCHED') {
+const onButtonClick = event => {
+  {
+    if (event.target.classList.contains('btn-active')) {
+      return;
+    }
+
+    if (event.target.textContent.toLowerCase() === arrayLsWatched) {
       queueButton.classList.replace('btn-active', 'btn-disable');
       watchedButton.classList.replace('btn-disable', 'btn-active');
 
-      getFilmsFromLocalStorage('watched');
-      render(arrayLsWatched);
-    } else if (e.target.textContent === 'QUEUE') {
+      renderList(arrayLsWatched, 1);
+    } else if (event.target.textContent.toLowerCase() === arrayLsQueue) {
       watchedButton.classList.replace('btn-active', 'btn-disable');
       queueButton.classList.replace('btn-disable', 'btn-active');
 
-      getFilmsFromLocalStorage('queue');
-      render(arrayLsQueue);
+      renderList(arrayLsQueue, 1);
     }
-  });
-}
-
-//funtction to det list of films from LocalStorage with parametr watched/queue
-export function getFilmsFromLocalStorage(typeFilms) {
-  if (typeFilms === 'watched') {
-    let watched = localStorage.getItem('watched');
-    if (watched === null) {
-      watched = [];
-    } else {
-      watched = JSON.parse(watched);
-    }
-    return watched;
-  } else if (typeFilms === 'queue') {
-    let queue = localStorage.getItem('queue');
-    if (queue === null) {
-      queue = [];
-    } else {
-      queue = JSON.parse(queue);
-    }
-    return queue;
   }
+};
+
+function getFilmsFromLocalStorage(typeFilms, pageNumber) {
+  const page = pageNumber ?? 1;
+  const pageSize = 20;
+
+  let movies = JSON.parse(localStorage.getItem(typeFilms));
+
+  if (!movies) {
+    return [];
+  }
+
+  return movies.slice((page - 1) * pageSize, page * pageSize);
 }
 
-function render(e) {
-  renderList('watched');
-  dinamicButtons.addEventListener('click', e => {
-    let type = 'watched';
-    if (e.target.id === 'watched') {
-      type = 'watched';
-      renderList(type);
-    }
-    if (e.target.id === 'queue') {
-      type = 'queue';
-      renderList(type);
-    }
-  });
+function onLibraryLinkClick(event) {
+  if (event.target.classList.contains('link__current')) {
+    return;
+  }
+
+  const currentType = getCurrentTab();
+  renderList(currentType);
 }
 
-libraryLink.addEventListener('click', render);
-
-function renderList(e) {
-  library.innerHTML = ' ';
-  const array = getFilmsFromLocalStorage(e);
+function renderList(typeFilms, pageNumber) {
+  const array = getFilmsFromLocalStorage(typeFilms, pageNumber);
   apiService.fetchMoviesByIds(array).then(data => {
     const card = galleryLib(data);
     library.innerHTML = card;
   });
 }
+const initializeUserLibrary = function () {
+  dinamicButtons.addEventListener('click', onButtonClick);
+  libraryLink.addEventListener('click', onLibraryLinkClick);
+};
+
+initializeUserLibrary();
