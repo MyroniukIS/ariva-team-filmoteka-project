@@ -39,9 +39,12 @@
   align-items: top;
   flex-wrap: wrap;
   list-style: none;
+
   padding: 0px;
+  margin-bottom: 40px;
 
   @media screen and (min-width: 768px) {
+    margin-bottom: 50px;
     flex-direction: row;
   }
 }

@@ -2,7 +2,6 @@ import renderModalClass from './render-modal-class.js';
 import apiService from './utils/api-service-modal.js';
 import movieModalTemplate from '../templates/one-movie-modal.hbs';
 import refs from './refs.js';
-import getFilmsFromLocalStorage from './displayUserLibrary.js';
 
 const { list, body } = refs;
 
@@ -31,10 +30,10 @@ function openModal(e) {
       const btnWatched = document.getElementById('toWatch');
       const btnQueue = document.getElementById('toQueue');
       if (localStorage.getItem('watched').includes(id)) {
-          btnWatched.textContent = 'REMOVE FROM WATCHED';
+        btnWatched.textContent = 'REMOVE FROM WATCHED';
       }
       if (localStorage.getItem('queue').includes(id)) {
-          btnQueue.textContent = 'REMOVE FROM QUEUE';
+        btnQueue.textContent = 'REMOVE FROM QUEUE';
       }
       // -----
 
@@ -87,7 +86,7 @@ const addFilmsToLSbyButtonClick = {
 
   buttonListener(e) {
     addFilmsToLSbyButtonClick.checkLStoEmpty();
-    
+
     if (e.target.nodeName === 'BUTTON') {
       const btnEl = e.target;
       btnEl.dataset.data = addFilmsToLSbyButtonClick.getId();
@@ -106,12 +105,12 @@ const addFilmsToLSbyButtonClick = {
         } else {
           confirm('Are you realy want to delete this film from Watched-list?');
 
-          btnWatched.classList.remove('modal_btn_active'); 
+          btnWatched.classList.remove('modal_btn_active');
           btnWatched.textContent = `ADD TO WATCHED`;
 
           let getItemWatched = localStorage.getItem('watched');
           getItemWatched = JSON.parse(getItemWatched);
-          let index = getItemWatched.indexOf(this.id)
+          let index = getItemWatched.indexOf(this.id);
           getItemWatched.splice(index, 1);
           localStorage.setItem('watched', JSON.stringify(getItemWatched));
         }
@@ -128,12 +127,12 @@ const addFilmsToLSbyButtonClick = {
         } else {
           confirm('Are you realy want to delete this film from Queue-list?');
 
-          btnQueue.classList.remove('modal_btn_active'); 
+          btnQueue.classList.remove('modal_btn_active');
           btnQueue.textContent = `ADD TO QUEUE`;
 
           let getItemQueue = localStorage.getItem('queue');
           getItemQueue = JSON.parse(getItemQueue);
-          let index = getItemQueue.indexOf(this.id)
+          let index = getItemQueue.indexOf(this.id);
           getItemQueue.splice(index, 1);
           localStorage.setItem('queue', JSON.stringify(getItemQueue));
         }
