@@ -28,14 +28,23 @@ const onButtonClick = event => {
       queueButton.classList.replace('btn-active', 'btn-disable');
       watchedButton.classList.replace('btn-disable', 'btn-active');
 
+      window.paginator.totalResults = getTotalByType(arrayLsWatched);
       renderList(arrayLsWatched, 1);
     } else if (event.target.textContent.toLowerCase() === arrayLsQueue) {
       watchedButton.classList.replace('btn-active', 'btn-disable');
       queueButton.classList.replace('btn-disable', 'btn-active');
 
+      window.paginator.totalResults = getTotalByType(arrayLsQueue);
       renderList(arrayLsQueue, 1);
     }
   }
+};
+
+const onLibraryPageClick = event => {
+  const { page = 1 } = event;
+  const currentType = getCurrentTab();
+
+  renderList(currentType, page);
 };
 
 function getFilmsFromLocalStorage(typeFilms, pageNumber) {
@@ -57,16 +66,33 @@ function onLibraryLinkClick(event) {
   }
 
   const currentType = getCurrentTab();
+  window.paginator.onPageClick = onLibraryPageClick;
+  window.paginator.totalResults = getTotalByType(currentType);
+
+  if (!window.paginator.isShown) {
+    window.paginator.show();
+  }
+
   renderList(currentType);
 }
 
 function renderList(typeFilms, pageNumber) {
   const array = getFilmsFromLocalStorage(typeFilms, pageNumber);
+  if (array?.length === 0) {
+    library.innerHTML = '';
+    return;
+  }
+
+  if (spiner.isHidden) {
+    spiner.show();
+  }
   apiService.fetchMoviesByIds(array).then(data => {
     const card = galleryLib(data);
     library.innerHTML = card;
   });
+  setInterval(spiner.hide, 1000);
 }
+
 const initializeUserLibrary = function () {
   dinamicButtons.addEventListener('click', onButtonClick);
   libraryLink.addEventListener('click', onLibraryLinkClick);
