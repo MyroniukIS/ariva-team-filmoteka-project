@@ -48,7 +48,7 @@ const onLibraryPageClick = event => {
   scrollToTop();
 };
 
-function getFilmsFromLocalStorage(typeFilms, pageNumber) {
+export function getFilmsFromLocalStorage(typeFilms, pageNumber) {
   const page = pageNumber ?? 1;
   const pageSize = 20;
 

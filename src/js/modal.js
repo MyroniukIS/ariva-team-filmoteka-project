@@ -58,6 +58,9 @@ function openModal(e) {
 
       function removeModalOpenAndEventListeners() {
         body.classList.remove('modal-open');
+        
+
+
         body.removeEventListener('click', closeModalByClick);
         body.removeEventListener('keydown', closeModalByKey);
       }
