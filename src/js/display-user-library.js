@@ -1,102 +1,103 @@
 import refs from '../js/refs.js';
-import {spiner} from './utils/rainbow-spiner.js'
+import { spiner } from './utils/rainbow-spiner.js';
 
-import apiService from './utils/api-service.js'
+import apiService from './utils/api-service.js';
 
-import galleryLib from '..//templates/one-movie-card-lib.hbs'
+import galleryLib from '..//templates/one-movie-card-lib.hbs';
 
-const { queueButton, watchedButton, dinamicButtons, list:library, libraryLink, homeLink} = refs;
+const { queueButton, watchedButton, dinamicButtons, list: library, libraryLink, homeLink } = refs;
 
 const arrayLsWatched = 'watched';
 const arrayLsQueue = 'queue';
 
-const displayUserLibrary = function () {
-  //default display watched
-  watchedButton.classList.add('btn-active');
-  queueButton.classList.add('btn-disable');
-  getFilmsFromLocalStorage('watched');
-  onClickButtonChangeCurrentButton();
+const getTotalByType = typeFilms => {
+  return JSON.parse(localStorage.getItem(typeFilms))?.length ?? 0;
 };
 
-displayUserLibrary();
+const getCurrentTab = () => {
+  return dinamicButtons.querySelector('.btn-active').textContent.toLowerCase();
+};
 
-//function to display current button in myLibrary
-function onClickButtonChangeCurrentButton() {
-  dinamicButtons.addEventListener('click', e => {
-    if (e.target.textContent === 'WATCHED') {
-      if (spiner.isHidden) {
-        spiner.show();
-      }
+const onButtonClick = event => {
+  {
+    event.preventDefault();
+    if (event.target.classList.contains('btn-active')) {
+      return;
+    }
+
+    if (event.target.textContent.toLowerCase() === arrayLsWatched) {
       queueButton.classList.replace('btn-active', 'btn-disable');
       watchedButton.classList.replace('btn-disable', 'btn-active');
-        
-      getFilmsFromLocalStorage('watched');
-      render(arrayLsWatched);
-      setTimeout(spiner.hide, 1000);
-    } else if (e.target.textContent === 'QUEUE') {
-      if (spiner.isHidden) {
-        spiner.show();
-      }
+
+      window.paginator.totalResults = getTotalByType(arrayLsWatched);
+      renderList(arrayLsWatched, 1);
+    } else if (event.target.textContent.toLowerCase() === arrayLsQueue) {
       watchedButton.classList.replace('btn-active', 'btn-disable');
       queueButton.classList.replace('btn-disable', 'btn-active');
 
-      getFilmsFromLocalStorage('queue');
-      render(arrayLsQueue);
-      setTimeout(spiner.hide, 1000);
+      window.paginator.totalResults = getTotalByType(arrayLsQueue);
+      renderList(arrayLsQueue, 1);
     }
-  });
+  }
+};
+
+const onLibraryPageClick = event => {
+  const { page = 1 } = event;
+  const currentType = getCurrentTab();
+
+  renderList(currentType, page);
+};
+
+function getFilmsFromLocalStorage(typeFilms, pageNumber) {
+  const page = pageNumber ?? 1;
+  const pageSize = 20;
+
+  let movies = JSON.parse(localStorage.getItem(typeFilms));
+
+  if (!movies) {
+    return [];
+  }
+
+  return movies.slice((page - 1) * pageSize, page * pageSize);
 }
 
-//funtction to det list of films from LocalStorage with parametr watched/queue
-export function getFilmsFromLocalStorage(typeFilms) {
-  if (typeFilms === 'watched') {
-    let watched = localStorage.getItem('watched');
-    if (watched === null) {
-      watched = [];
-    } else {
-      watched = JSON.parse(watched);
-    }
-    return watched;
-  } else if (typeFilms === 'queue') {
-    let queue = localStorage.getItem('queue');
-    if (queue === null) {
-      queue = [];
-    } else {
-      queue = JSON.parse(queue);
-    }
-    return queue;
+function onLibraryLinkClick(event) {
+  event.preventDefault();
+  if (event.target.classList.contains('link__current')) {
+    return;
   }
+
+  const currentType = getCurrentTab();
+  window.paginator.onPageClick = onLibraryPageClick;
+  window.paginator.totalResults = getTotalByType(currentType);
+
+  if (!window.paginator.isShown) {
+    window.paginator.show();
+  }
+
+  renderList(currentType);
 }
 
-function render(e) {
-    renderList('watched');
-dinamicButtons.addEventListener('click', e => {
-  let type = 'watched';
-  if  (e.target.id === 'watched'){
-    type = 'watched';
-    renderList(type);
+function renderList(typeFilms, pageNumber) {
+  const array = getFilmsFromLocalStorage(typeFilms, pageNumber);
+  if (array?.length === 0) {
+    library.innerHTML = '';
+    return;
   }
-  if  (e.target.id === 'queue'){
-    type = 'queue';
-    renderList(type);
-  }
-  
-});
-}
 
-libraryLink.addEventListener('click', render);
-
-function renderList(e) {
   if (spiner.isHidden) {
-      spiner.show();
-    }
-  library.innerHTML = ' ';
-  watchedButton.classList.add('btn-active');
-
-  const array = getFilmsFromLocalStorage(e);
+    spiner.show();
+  }
   apiService.fetchMoviesByIds(array).then(data => {
-      const card = galleryLib(data);
-      library.innerHTML = card;
-  })
+    const card = galleryLib(data);
+    library.innerHTML = card;
+  });
   setTimeout(spiner.hide, 1000);
 }
+
+const initializeUserLibrary = function () {
+  dinamicButtons.addEventListener('click', onButtonClick);
+  libraryLink.addEventListener('click', onLibraryLinkClick);
+};
+
+initializeUserLibrary();
