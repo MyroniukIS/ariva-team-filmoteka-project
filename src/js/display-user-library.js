@@ -4,8 +4,8 @@ import apiService from './utils/api-service.js';
 import galleryLib from '..//templates/one-movie-card-lib.hbs';
 import { enrichMovies, scrollToTop } from './components/library-adapter';
 
-const { queueButton, watchedButton, dinamicButtons, list: library, libraryLink, homeLink } = refs;
-
+const { queueButton, watchedButton, dinamicButtons, list: library, libraryLink } = refs;
+const textEmpty = document.getElementById('library-empty');
 const arrayLsWatched = 'watched';
 const arrayLsQueue = 'queue';
 
@@ -82,9 +82,13 @@ function renderList(typeFilms, pageNumber) {
   const array = getFilmsFromLocalStorage(typeFilms, pageNumber);
   if (array?.length === 0) {
     library.innerHTML = '';
+    textEmpty.classList.remove('hidden');
+    setTimeout(() => {
+      textEmpty.classList.add('hidden');
+    }, 2000); 
     return;
   }
-
+  
   if (spiner.isHidden) {
     spiner.show();
   }
