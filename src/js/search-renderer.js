@@ -3,6 +3,7 @@ import validator from 'validator';
 import refs from './refs.js';
 import serviceApi from './utils/api-service.js';
 import trending from './components/trending.js';
+import {spiner} from './utils/rainbow-spiner.js';
 import { drawCards, scrollToTop } from './components/gallery-adapter';
 
 const { list, input, notifyEr, searchHeadIcon } = refs;
@@ -54,6 +55,7 @@ const fetchNewPagefromSearch = event => {
 };
 
 function render(query) {
+  spiner.show()
   serviceApi
     .fetchDataDb(query)
     .then(param => {
@@ -70,7 +72,7 @@ function render(query) {
       const { showArrayElement, totalResults } = elem;
 
       drawCards(showArrayElement);
-
+      spiner.hide()
       window.paginator.onPageClick = fetchNewPagefromSearch;
       window.paginator.totalResults = totalResults;
 
