@@ -24,17 +24,25 @@ displayUserLibrary();
 function onClickButtonChangeCurrentButton() {
   dinamicButtons.addEventListener('click', e => {
     if (e.target.textContent === 'WATCHED') {
-        queueButton.classList.replace('btn-active', 'btn-disable');
-        watchedButton.classList.replace('btn-disable', 'btn-active');
+      if (spiner.isHidden) {
+        spiner.show();
+      }
+      queueButton.classList.replace('btn-active', 'btn-disable');
+      watchedButton.classList.replace('btn-disable', 'btn-active');
         
-        getFilmsFromLocalStorage('watched');
-        render(arrayLsWatched);
+      getFilmsFromLocalStorage('watched');
+      render(arrayLsWatched);
+      setTimeout(spiner.hide, 1000);
     } else if (e.target.textContent === 'QUEUE') {
-        watchedButton.classList.replace('btn-active', 'btn-disable');
-        queueButton.classList.replace('btn-disable', 'btn-active');
+      if (spiner.isHidden) {
+        spiner.show();
+      }
+      watchedButton.classList.replace('btn-active', 'btn-disable');
+      queueButton.classList.replace('btn-disable', 'btn-active');
 
-        getFilmsFromLocalStorage('queue');
-        render(arrayLsQueue);
+      getFilmsFromLocalStorage('queue');
+      render(arrayLsQueue);
+      setTimeout(spiner.hide, 1000);
     }
   });
 }
@@ -79,11 +87,16 @@ dinamicButtons.addEventListener('click', e => {
 libraryLink.addEventListener('click', render);
 
 function renderList(e) {
+  if (spiner.isHidden) {
+      spiner.show();
+    }
   library.innerHTML = ' ';
+  watchedButton.classList.add('btn-active');
 
   const array = getFilmsFromLocalStorage(e);
   apiService.fetchMoviesByIds(array).then(data => {
       const card = galleryLib(data);
       library.innerHTML = card;
-    })
+  })
+  setTimeout(spiner.hide, 1000);
 }

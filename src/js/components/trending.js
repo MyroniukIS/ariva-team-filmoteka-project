@@ -28,7 +28,7 @@ export default class Trending {
     } catch (error) {
       console.error(error);
     } finally {
-      setTimeout(spiner.hide, 500);
+      setTimeout(spiner.hide, 1000);
     }
   }
 
