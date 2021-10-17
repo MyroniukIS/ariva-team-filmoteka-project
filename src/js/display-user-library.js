@@ -90,7 +90,7 @@ function renderList(typeFilms, pageNumber) {
     const card = galleryLib(data);
     library.innerHTML = card;
   });
-  setInterval(spiner.hide, 1000);
+  setTimeout(spiner.hide, 1000);
 }
 
 const initializeUserLibrary = function () {
