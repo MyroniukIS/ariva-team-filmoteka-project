@@ -10,7 +10,7 @@ const arrayLsWatched = 'watched';
 const arrayLsQueue = 'queue';
 
 const getTotalByType = typeFilms => {
-  return JSON.parse(localStorage.getItem(typeFilms))?.length ?? 0;
+  return JSON.parse(localStorage.getItem(typeFilms))?.length || 0;
 };
 
 const getCurrentTab = () => {
@@ -49,7 +49,7 @@ const onLibraryPageClick = event => {
 };
 
 function getFilmsFromLocalStorage(typeFilms, pageNumber) {
-  const page = pageNumber ?? 1;
+  const page = pageNumber || 1;
   const pageSize = 20;
 
   let movies = JSON.parse(localStorage.getItem(typeFilms));
